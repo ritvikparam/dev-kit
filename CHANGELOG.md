@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2026-10-23
+
+### Added
+- **chrome-extension-prompter skill** — Converts Chrome extension ideas into polished build prompts, with feasibility checks and an MV3 playbook of per-type constraints (trackers, overlays, LLM tools, new-tab, capture, nudges).
+
 ## [1.1.0] - 2026-05-31
 
 ### Added
