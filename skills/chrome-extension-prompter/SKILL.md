@@ -1,6 +1,6 @@
 ---
 name: chrome-extension-prompter
-description: Turns Satvik's rough Chrome extension ideas into polished, copy-paste-ready Claude Code build prompts — with the right Manifest V3 constraints baked in and a strong design-direction section so the result looks premium, not like a hobby project. Use this skill WHENEVER Satvik mentions building, prototyping, or ideating a Chrome extension or browser extension — including phrases like 'chrome extension for...', 'browser extension that...', 'extension idea', 'write a prompt for an extension', 'improve this extension prompt', or when he describes a browser-based tool/workflow and wants to build it with Claude Code. Also use when he asks to review, refine, or debug an extension build prompt, or asks what's feasible for an extension. Do NOT use for desktop apps, web apps, mobile apps, or VS Code extensions.
+description: Turns rough Chrome extension ideas into polished, copy-paste-ready Claude Code build prompts — with the right Manifest V3 constraints baked in and a strong design-direction section so the result looks premium, not like a hobby project. Use this skill WHENEVER the user mentions building, prototyping, or ideating a Chrome extension or browser extension — including phrases like 'chrome extension for...', 'browser extension that...', 'extension idea', 'write a prompt for an extension', 'improve this extension prompt', or when they describe a browser-based tool/workflow and wants to build it with Claude Code. Also use when they ask to review, refine, or debug an extension build prompt, or asks what's feasible for an extension. Do NOT use for desktop apps, web apps, mobile apps, or VS Code extensions.
 ---
 
 # Chrome Extension Prompter
@@ -38,9 +38,9 @@ Prioritize craft. Internals can cut invisible corners, but nothing user-facing s
 
 Rules that make this template work:
 
-- **Always name the product.** A named product gives Claude Code an identity to design around and measurably improves output. Invent a short, evocative name (one word beats three); tell Satvik he can swap it.
+- **Always name the product.** A named product gives Claude Code an identity to design around and measurably improves output. Invent a short, evocative name (one word beats three); tell the user they can swap it.
 - **Identify the "heart" of the UI** and lavish design words on it specifically. Every extension has one surface the user lives in — a floating toolbar, a side panel, a popup, a new-tab page. Generic "make it pretty" produces generic results; "the floating toolbar is the heart of the product, make it beautiful: pill-shaped, backdrop-blur..." produces premium ones.
-- **Design references stay consistent:** Linear, Arc, Raycast, Vercel. These four anchor the aesthetic Satvik wants.
+- **Design references stay consistent:** Linear, Arc, Raycast, Vercel. These four anchor a premium, modern-tool aesthetic; if the user names other references, use theirs.
 - **No nitty-gritty implementation details** — no file structures, no function names, no CSS specifics beyond feel-words. Exception: the rework-preventing constraints from the playbook (MV3 service worker rules, file:// access, etc.). Those go in as one-liners inside CORE FUNCTIONALITY.
 - **Scope to milestones when the idea is multi-feature.** If the idea bundles 2+ distinct features (e.g., a tracker + an AI tool), either prompt for feature one and note that feature two is milestone two, or explicitly structure the prompt as "Milestone 1: ... get this fully working first. Milestone 2: ...". Mixing service-worker debugging with API-call debugging in one pass is where builds get messy.
 
@@ -54,10 +54,10 @@ Flag these honestly — they're the difference between a fun afternoon and a fru
 - **No persistent background processes.** Anything phrased as "constantly monitor X in real time" needs reframing as event-driven + alarms.
 - **LLM features need an API key and host permissions** — cheap and easy, but it means the extension isn't zero-setup. Default to Anthropic API with a small/fast model.
 
-## When Satvik brings an existing prompt to improve
+## When the user brings an existing prompt to improve
 
-Diagnose against the template: Does it have a product name? Is the design section at least as long as the functionality section? Does it name the heart surface? Does it include the playbook constraints for its type — and nothing more technical than that? Is it scoped to one milestone? Rewrite it, then tell him in 2-3 bullets what you changed and why.
+Diagnose against the template: Does it have a product name? Is the design section at least as long as the functionality section? Does it name the heart surface? Does it include the playbook constraints for its type — and nothing more technical than that? Is it scoped to one milestone? Rewrite it, then tell them in 2-3 bullets what you changed and why.
 
 ## Voice and delivery
 
-Satvik is technical enough to follow architecture talk but is not a Chrome APIs expert — explain a constraint in one plain sentence when it affects his decision, skip it otherwise. Keep the surrounding chat tight: the prompt is the deliverable, not an essay about the prompt. Where natural, note when an idea doubles as content ("build X with Claude Code in 30 minutes" workshop/video material) — but only when it genuinely does.
+Assume the user is technical enough to follow architecture talk but is not a Chrome APIs expert — explain a constraint in one plain sentence when it affects their decision, skip it otherwise. Keep the surrounding chat tight: the prompt is the deliverable, not an essay about the prompt. Where natural, note when an idea doubles as content ("build X with Claude Code in 30 minutes" workshop/video material) — but only when it genuinely does.

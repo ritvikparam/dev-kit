@@ -50,7 +50,7 @@ git commit -m "$(cat <<'EOF'
 
 <body — optional, only if why is non-obvious>
 
-Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+<attribution trailer, if your environment specifies one>
 EOF
 )"
 ```

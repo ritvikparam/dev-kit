@@ -1,25 +1,23 @@
 {
-  "name": "Convert Git Commit to Annotated Diff HTML",
-  "skills": ["cai-html-effectiveness"],
-  "query": "Convert this git commit to HTML: https://github.infra..com/Sense/cml-serving/pull/1373/commits/e8ef85e31335d98b14d864d9363d5cf1d0f40dbb",
+  "name": "Summarize a GitHub PR as an HTML Report",
+  "skills": ["html-render"],
+  "query": "Make this PR readable as HTML: https://github.com/<org>/<repo>/pull/<number>",
   "expected_behavior": [
-    "Step 1: Parse URL to extract host (github.infra..com), org (Sense), repo (cml-serving), PR (1373), SHA (e8ef85e...)",
-    "Step 2: Fetch commit metadata via gh api repos/Sense/cml-serving/commits/e8ef85e... --hostname github.infra..com",
-    "Step 3: Fetch diff via gh api with Accept: application/vnd.github.diff header",
-    "Step 4: Classify as Category 2 (Code Review)",
-    "Step 5: Generate HTML with commit header, per-file diffs, syntax highlighting, stats",
-    "Step 6: Save to /tmp/cml-serving-e8ef85e.html",
-    "Step 7: Report file path to user"
+    "Step 1: Parse the URL to extract host, org, repo, and PR number",
+    "Step 2: Fetch PR metadata and diff via gh pr view <URL> --json ... and gh pr diff <URL>",
+    "Step 3: Classify as Category 2 (Code Review), composing in Category 8 elements for risks",
+    "Step 4: Summarize what changed and why per logical change group (1-3 sentences each)",
+    "Step 5: Save to /tmp/<repo>-pr-<number>.html",
+    "Step 6: Report file path to user"
   ],
   "success_criteria": [
-    "Skill activates when user provides a GitHub commit URL",
-    "Correctly parses org, repo, and SHA from the URL",
-    "Uses gh api with --hostname for GitHub Enterprise URLs",
-    "Generated HTML shows annotated diff with line numbers and color coding",
-    "Includes commit message, author, date, and file change stats",
-    "Per-file diffs are collapsible",
+    "Skill activates when user provides a GitHub PR or commit URL",
+    "Correctly parses org, repo, and PR number from the URL (including GitHub Enterprise hosts)",
+    "Summarizes changes rather than reproducing the full diff",
+    "Inline diff snippets appear only when small (< 5 lines) and tied to a finding or risk",
+    "Surfaces risks and open questions, not just a restatement of the PR description",
+    "Person names are wrapped in .redacted spans",
     "HTML is self-contained with no external dependencies"
   ],
-  "verified_date": "2026-05-12",
-  "status": "PASSED"
+  "status": "UNVERIFIED"
 }

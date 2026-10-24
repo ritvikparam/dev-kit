@@ -6,7 +6,7 @@
     "Step 1: Determines the RCA file path (user-provided or /tmp/rca-<slug>.html)",
     "Step 2: Reads the file if it exists (never writes without reading first)",
     "Step 3: Determines action (new issue, correction, workaround, or false positive)",
-    "Step 4: Generates self-contained HTML following  docs visual standards",
+    "Step 4: Generates self-contained HTML following the shared TEMPLATES.md visual standards",
     "Step 5: Includes color-coded status badges, collapsible investigation, copy-to-clipboard on code",
     "Step 6: Updates Runbook and Learnings sections in-place with transferable knowledge",
     "Step 7: Saves to /tmp/ and tells user the path"

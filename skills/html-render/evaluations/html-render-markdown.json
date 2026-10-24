@@ -1,6 +1,6 @@
 {
   "name": "Convert Markdown to Interactive HTML",
-  "skills": ["cai-html-effectiveness"],
+  "skills": ["html-render"],
   "query": "Convert this AGENTS.md file to an interactive HTML page",
   "expected_behavior": [
     "Step 1: Read the AGENTS.md file",
