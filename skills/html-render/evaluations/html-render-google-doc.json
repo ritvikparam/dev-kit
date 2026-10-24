@@ -1,10 +1,12 @@
 {
   "name": "Convert Google Doc to Interactive HTML",
-  "skills": ["cai-html-effectiveness"],
-  "query": "Convert this Google Doc to HTML: https://docs.google.com/document/d/1srxeth7iBydv8fmf0lNOEV1DEeyggBtEF0tqIhSTOa4/edit",
+  "skills": [
+    "html-render"
+  ],
+  "query": "Convert this Google Doc to HTML: https://docs.google.com/document/d/<FILE_ID>/edit",
   "expected_behavior": [
-    "Step 1: Parse the URL to extract file ID (1srxeth7iBydv8fmf0lNOEV1DEeyggBtEF0tqIhSTOa4)",
-    "Step 2: Fetch content using mcp_gdrive_gdrive_read_file(fileId='1srxeth7iBydv8fmf0lNOEV1DEeyggBtEF0tqIhSTOa4')",
+    "Step 1: Parse the URL to extract file ID (<FILE_ID>)",
+    "Step 2: Fetch content using mcp_gdrive_gdrive_read_file(fileId='<FILE_ID>')",
     "Step 3: Classify content (likely Category 7: Research & Learning)",
     "Step 4: Generate self-contained HTML with TOC, collapsible sections, heading hierarchy",
     "Step 5: Save to /tmp/<doc-title-slug>.html",
@@ -18,6 +20,5 @@
     "HTML is self-contained with no external dependencies",
     "File opens correctly in a browser"
   ],
-  "verified_date": "2026-05-12",
-  "status": "PASSED"
+  "status": "UNVERIFIED"
 }

@@ -534,9 +534,9 @@ validate();
 <section class="code-refs">
     <h2>Code References</h2>
     <details>
-        <summary><code>skills/html-effectiveness/SKILL.md</code> — Main skill file</summary>
+        <summary><code>skills/html-render/SKILL.md</code> — Main skill file</summary>
         <pre><code>---
-name: cai-html-effectiveness
+name: html-render
 description: Convert files, markdown...
 ---</code></pre>
     </details>

@@ -129,7 +129,7 @@ Produce a single self-contained `.html` file following these rules:
 - Single file, zero external dependencies (no CDN links)
 - All CSS in `<style>` tags, all JS in `<script>` tags
 - Responsive (mobile + desktop via CSS Grid/Flexbox)
-- Light theme only (matches  docs — no dark mode toggle)
+- Light theme only (clean documentation style — no dark mode toggle)
 - Semantic HTML: `<article>`, `<section>`, `<details>`, `<nav>`, `<main>`
 - Print-friendly: `@media print` hides nav, adjusts layout
 
@@ -140,13 +140,13 @@ Produce a single self-contained `.html` file following these rules:
 - Smooth scroll navigation with anchor links
 - Copy-to-clipboard buttons for code blocks
 
-**Visual Standards ( Docs style):**
+**Visual Standards (documentation style):**
 - Font: `Noto Sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`
 - Code font: `Source Code Pro, Menlo, Monaco, monospace`
 - Max content width: `800px`
 - Body text: `#333333`, 16px, line-height 1.7
 - Headings: H1 light-weight (400), H2 in accent color `#1a7fad`
-- Links: `#1a7fad` ( teal)
+- Links: `#1a7fad` (teal)
 - Code blocks: `#f5f5f5` bg, left border `3px solid #e0e0e0`, no border-radius
 - Note/callout boxes: `#e8f4f8` bg, left border `4px solid #1a7fad`
 - Tables: simple borders, header row in `#f5f5f5`
@@ -181,7 +181,7 @@ After generating:
 
 ### Google Docs
 
-**Prerequisites:** Google Drive MCP configured (see `cai-document-access` skill)
+**Prerequisites:** A Google Drive MCP server configured
 
 1. Extract file ID from URL: `https://docs.google.com/document/d/<FILE_ID>/edit...` → take the `<FILE_ID>` segment
 2. Fetch content:
@@ -296,7 +296,7 @@ When user provides a GitHub commit or PR URL:
 
 ## HTML Document Skeleton
 
-Every generated file starts with this structure ( docs style):
+Every generated file starts with this structure:
 
 ```html
 <!DOCTYPE html>

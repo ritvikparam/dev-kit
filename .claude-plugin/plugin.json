@@ -1,7 +1,10 @@
 {
   "name": "devkit",
   "description": "Software engineering daily use skills/tools",
-  "version": "1.1.0",
-  "source": "./",
-  "repository": "https://github.com/ritvikneu/dev-kit"
+  "version": "1.2.0",
+  "repository": "https://github.com/ritvikneu/dev-kit",
+  "author": {
+    "name": "Ritvik Paramkusham"
+  },
+  "license": "MIT"
 }

@@ -185,8 +185,4 @@ When creating a new RCA, use this structure (with base styles from `references/T
 
 ## Related Skills
 
-- **cai-html-render** — Visual standards and HTML generation patterns (shared via `references/TEMPLATES.md`)
-- **cai-escalation-intelligence** — Analyze ENGESC escalations for RCA extraction
-- **cai-glossary** — CAI/CML terminology and component mappings
-- **cai-control-plane-access** — kubectl access for control plane investigation
-- **cai-ml-cluster-access** — kubectl access for ML workspace investigation
+- **html-render** — Visual standards and HTML generation patterns (shared via `references/TEMPLATES.md`)

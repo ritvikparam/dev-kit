@@ -1,0 +1,23 @@
+{
+  "name": "Chrome Extension Build Prompt (Time Tracker)",
+  "skills": ["chrome-extension-prompter"],
+  "query": "I want a chrome extension that tracks how much time I spend on each site and nudges me when I'm on Twitter too long",
+  "expected_behavior": [
+    "Step 1: Proceeds without interrogating (idea is clear enough), or asks at most 1-2 sharp questions",
+    "Step 2: Checks feasibility (browser-only tracking is fine; flags that time outside Chrome isn't visible)",
+    "Step 3: Classifies as Tracking + Behavioral nudge and reads references/mv3-playbook.md",
+    "Step 4: Writes the prompt using the template: named product, CORE FUNCTIONALITY, DESIGN DIRECTION",
+    "Step 5: Delivers the prompt in a code block with 1-2 short notes"
+  ],
+  "success_criteria": [
+    "Prompt gives the extension a short, evocative product name",
+    "Includes the MV3 service-worker constraint: no setInterval, timestamps persisted to chrome.storage.local",
+    "Mentions chrome.idle and window focus events for accurate tracking",
+    "Design section is at least as long as functionality section and names the heart UI surface",
+    "References the Linear/Arc/Raycast/Vercel aesthetic",
+    "Scopes tracker and nudge into milestones or keeps nudge lightweight",
+    "No file structures or function names beyond playbook one-liners",
+    "Ends with a request for unpacked install instructions"
+  ],
+  "status": "UNVERIFIED"
+}
