@@ -5,7 +5,15 @@ All notable changes to this project will be documented in this file.
 ## [1.2.0] - 2026-10-23
 
 ### Added
+- MIT LICENSE, `examples/` with sample input/output per skill, and README screenshots in `assets/`
 - **chrome-extension-prompter skill** — Converts Chrome extension ideas into polished build prompts, with feasibility checks and an MV3 playbook of per-type constraints (trackers, overlays, LLM tools, new-tab, capture, nudges).
+
+### Changed
+- README rewritten for public release: proof, per-skill install, skill-authoring recipe
+- Removed internal tool references and private URLs from skills, templates, and evaluations
+- chrome-extension-prompter and raise-pr generalized for any user (no hardcoded names or model versions)
+- html-render git-commit eval now matches the skill's "summarize, don't reproduce the diff" rule
+- Synced marketplace.json version with plugin.json; added author and license to plugin.json
 
 ## [1.1.0] - 2026-05-31
 

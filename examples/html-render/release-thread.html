@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>v2.4 Release Thread — Decisions &amp; Follow-ups</title>
+    <style>
+        :root {
+            --bg: #ffffff; --fg: #333333;
+            --accent: #1a7fad; --accent-hover: #155d80;
+            --surface: #f5f5f5; --border: #e0e0e0;
+            --code-bg: #f5f5f5;
+            --note-bg: #e8f4f8; --note-border: #1a7fad;
+            --success: #28a745; --warning: #e67e22; --danger: #dc3545;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg); color: var(--fg);
+            line-height: 1.7; padding: 2rem 3rem;
+            max-width: 800px; margin: 0 auto; font-size: 16px;
+        }
+        h1 { font-size: 2rem; font-weight: 400; margin: 1.5rem 0 1rem; }
+        h2 { font-size: 1.5rem; font-weight: 400; color: var(--accent); margin: 2rem 0 0.75rem; }
+        h3 { font-size: 1.125rem; font-weight: 600; margin: 1.5rem 0 0.5rem; }
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { color: var(--accent-hover); text-decoration: underline; }
+        p { margin-bottom: 1rem; }
+        ul, ol { margin: 0.5rem 0 1rem 1.5rem; }
+        li { margin-bottom: 0.4rem; }
+        code { font-family: 'Source Code Pro', Menlo, Monaco, monospace; font-size: 0.875em; background: var(--code-bg); padding: 0.1rem 0.3rem; }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        th, td { padding: 0.6rem 0.75rem; border: 1px solid var(--border); text-align: left; vertical-align: top; }
+        th { background: var(--surface); font-weight: 600; }
+        .note { background: var(--note-bg); border-left: 4px solid var(--note-border); padding: 1rem 1.25rem; margin: 1.5rem 0; }
+        .note strong { display: block; margin-bottom: 0.5rem; }
+        .note.risk { background: #fff8ef; border-left-color: var(--warning); }
+        .badge { display: inline-block; padding: 0.15rem 0.5rem; font-size: 0.75rem; font-weight: 600; border-radius: 3px; white-space: nowrap; }
+        .badge-success { background: #d4edda; color: #155724; }
+        .badge-warning { background: #fff3cd; color: #856404; }
+        .badge-danger { background: #f8d7da; color: #721c24; }
+        .redacted { background: #333; color: #333; padding: 0.1rem 0.3rem; border-radius: 2px; cursor: pointer; transition: all 0.2s; }
+        .redacted:hover { background: transparent; color: var(--fg); }
+        @media print { body { max-width: 100%; padding: 1rem; } nav, .filter-bar { display: none; } .redacted { background: transparent; color: var(--fg); } }
+        /* Category 10: Chat & Conversation Summary */
+        .chat-header { border-bottom: 2px solid var(--accent); padding-bottom: 1rem; margin-bottom: 2rem; }
+        .chat-meta { font-size: 0.875rem; opacity: 0.7; margin-top: 0.5rem; }
+        .overview-card { background: var(--note-bg); border-left: 4px solid var(--accent); padding: 1.5rem; margin-bottom: 2rem; border-radius: 0 4px 4px 0; }
+        .overview-card h2 { margin-top: 0; }
+        /* Category 11: Tasks & Todos */
+        .tasks-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+        progress { flex: 1; height: 8px; border-radius: 4px; }
+        progress::-webkit-progress-bar { background: var(--surface); border-radius: 4px; }
+        progress::-webkit-progress-value { background: var(--accent); border-radius: 4px; }
+        .tasks-count { font-size: 0.875rem; opacity: 0.8; }
+        .filter-bar { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+        .filter-btn { padding: 0.25rem 0.75rem; border: 1px solid var(--border); border-radius: 999px; background: none; color: var(--fg); cursor: pointer; font: inherit; font-size: 0.875rem; }
+        .filter-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+        .task-list { list-style: none; margin-left: 0; }
+        .task-item { padding: 0.75rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; gap: 1rem; }
+        .task-item[data-status="done"] label { opacity: 0.6; text-decoration: line-through; }
+        .owner { font-size: 0.875rem; white-space: nowrap; }
+        .sources { font-size: 0.8rem; opacity: 0.7; margin-top: 2.5rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+        @media (max-width: 600px) { body { padding: 1rem; } }
+    </style>
+</head>
+<body>
+    <main>
+        <header class="chat-header">
+            <h1>v2.4 Release: Decisions &amp; Follow-ups</h1>
+            <p class="chat-meta">Release thread · 13 messages · 09:12–10:40 · 2026-10-21</p>
+        </header>
+
+        <section class="overview-card">
+            <h2>Overview</h2>
+            <p>v2.4 shipped after a checkout e2e timeout was <strong>papered over, not fixed</strong>. The payment iframe slowed from under 10s to about 12s after the fraud-check script landed in <code>#471</code>. A 20s timeout (<code>#482</code>) unblocked the release; the real fix is tracked in <code>PAY-318</code>.</p>
+        </section>
+
+        <div class="note risk">
+            <strong>⚠ What to watch</strong>
+            Users may feel the same ~2s regression that CI did. The 20s timeout hides it from the test suite, so nothing will alert if it gets worse before <code>PAY-318</code> lands.
+        </div>
+
+        <section class="decisions">
+            <h2>Decisions</h2>
+            <table>
+                <thead><tr><th>Decision</th><th>Rationale</th><th>Status</th></tr></thead>
+                <tbody>
+                    <tr><td>Merge <code>#482</code> (iframe timeout 10s → 20s)</td><td>Unblock v2.4 today; explicitly a stopgap</td><td><span class="badge badge-warning">Workaround</span></td></tr>
+                    <tr><td>Lazy-load fraud-check script after iframe mount</td><td>Removes the actual cause of the slowdown</td><td><span class="badge badge-warning">Planned · PAY-318</span></td></tr>
+                    <tr><td>Mention possible slower checkout in release notes</td><td>Be upfront about the known regression</td><td><span class="badge badge-success">Agreed</span></td></tr>
+                    <tr><td>Cut v2.4</td><td>CI green after <code>#482</code></td><td><span class="badge badge-success">Done</span></td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="action-items">
+            <h2>Action Items</h2>
+            <div class="tasks-header">
+                <progress value="1" max="4"></progress>
+                <span class="tasks-count">1 / 4 complete</span>
+            </div>
+            <div class="filter-bar">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="pending">Pending</button>
+                <button class="filter-btn" data-filter="done">Done</button>
+            </div>
+            <ul class="task-list">
+                <li class="task-item" data-status="done"><label><input type="checkbox" checked> Merge <code>#482</code> and cut v2.4</label><span class="owner"><span class="redacted">Maya</span></span></li>
+                <li class="task-item" data-status="pending"><label><input type="checkbox"> Lazy-load fraud script — <code>PAY-318</code></label><span class="owner"><span class="redacted">Arjun</span></span></li>
+                <li class="task-item" data-status="pending"><label><input type="checkbox"> Add checkout-latency note to v2.4 release notes</label><span class="owner">Unassigned</span></li>
+                <li class="task-item" data-status="pending"><label><input type="checkbox"> Take ownership of the flaky-test dashboard</label><span class="owner"><span class="redacted">Dev</span></span></li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Open Questions</h2>
+            <ul>
+                <li><strong>Who writes the release-notes line?</strong> Agreed in the thread, but nobody picked it up, and v2.4 is already cut.</li>
+                <li><strong>Refund API docs (<code>#476</code>) have been open 9 days.</strong> Raised in passing; no reviewer named.</li>
+                <li><strong>Should the timeout go back to 10s once PAY-318 lands?</strong> Otherwise the stopgap becomes permanent.</li>
+            </ul>
+        </section>
+
+        <p class="sources">Sources: release thread export, 2026-10-21 (<code>release-thread.md</code>). Names are redacted; hover to reveal.</p>
+    </main>
+    <script>
+        const tasks = document.querySelectorAll('.task-item input');
+        const progress = document.querySelector('progress');
+        const count = document.querySelector('.tasks-count');
+        function updateProgress() {
+            const done = document.querySelectorAll('.task-item input:checked').length;
+            progress.value = done; progress.max = tasks.length;
+            count.textContent = `${done} / ${tasks.length} complete`;
+            document.querySelectorAll('.task-item').forEach(li => {
+                li.dataset.status = li.querySelector('input').checked ? 'done' : 'pending';
+            });
+        }
+        tasks.forEach(t => t.addEventListener('change', updateProgress));
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const filter = btn.dataset.filter;
+                document.querySelectorAll('.task-item').forEach(li => {
+                    li.style.display = (filter === 'all' || li.dataset.status === filter) ? '' : 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

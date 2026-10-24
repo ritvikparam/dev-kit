@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RCA: checkout-api — 502s and connection pool exhaustion</title>
+    <style>
+        :root {
+            --bg: #ffffff; --fg: #333333;
+            --accent: #1a7fad; --accent-hover: #155d80;
+            --surface: #f5f5f5; --border: #e0e0e0;
+            --code-bg: #f5f5f5;
+            --note-bg: #e8f4f8; --note-border: #1a7fad;
+            --success: #28a745; --warning: #e67e22; --danger: #dc3545;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg); color: var(--fg);
+            line-height: 1.7; padding: 2rem 3rem;
+            max-width: 800px; margin: 0 auto; font-size: 16px;
+        }
+        h1 { font-size: 2rem; font-weight: 400; margin: 1.5rem 0 1rem; }
+        h2 { font-size: 1.5rem; font-weight: 400; color: var(--accent); margin: 2rem 0 0.75rem; }
+        h3 { font-size: 1.125rem; font-weight: 600; margin: 1.5rem 0 0.5rem; }
+        p { margin-bottom: 1rem; }
+        ul, ol { margin: 0.5rem 0 1rem 1.5rem; }
+        li { margin-bottom: 0.4rem; }
+        pre { position: relative; background: var(--code-bg); padding: 1rem 1.25rem; border-left: 3px solid var(--border); overflow-x: auto; margin: 1rem 0; font-family: 'Source Code Pro', Menlo, Monaco, monospace; font-size: 0.875rem; line-height: 1.5; }
+        code { font-family: 'Source Code Pro', Menlo, Monaco, monospace; font-size: 0.875em; background: var(--code-bg); padding: 0.1rem 0.3rem; }
+        pre code { background: none; padding: 0; }
+        details { margin: 1rem 0; border: 1px solid var(--border); }
+        summary { padding: 0.75rem 1rem; cursor: pointer; font-weight: 600; background: var(--surface); }
+        details[open] summary { border-bottom: 1px solid var(--border); }
+        details > div { padding: 0.75rem 1rem; }
+        .badge { display: inline-block; padding: 0.15rem 0.5rem; font-size: 0.75rem; font-weight: 600; border-radius: 3px; vertical-align: middle; }
+        .badge-success { background: #d4edda; color: #155724; }
+        .badge-warning { background: #fff3cd; color: #856404; }
+        .badge-danger { background: #f8d7da; color: #721c24; }
+        @media print { body { max-width: 100%; padding: 1rem; } nav, .filters, .copy-btn { display: none; } }
+        /* RCA-specific */
+        header dl { display: grid; grid-template-columns: max-content 1fr; gap: 0.25rem 1rem; font-size: 0.9rem; }
+        header dt { font-weight: 600; }
+        .issue { border: 1px solid var(--border); margin: 1.5rem 0; padding: 1.5rem; border-radius: 4px; }
+        .issue h2 { margin-top: 0; }
+        .symptom { font-size: 1.05rem; border-left: 4px solid var(--accent); padding-left: 1rem; margin: 1rem 0; }
+        .root-cause { background: var(--note-bg); border-left: 4px solid var(--note-border); padding: 1rem 1.25rem; margin: 1rem 0; }
+        .root-cause h3 { margin-top: 0; }
+        .update { border-left: 3px solid var(--accent); padding: 0.75rem 1rem; margin: 1rem 0; background: #fafafa; }
+        .runbook ol { margin-left: 1.5rem; }
+        .runbook li { margin-bottom: 1rem; }
+        .learnings ul { margin-left: 1.5rem; }
+        .learnings li { margin-bottom: 0.5rem; }
+        .badge-muted { background: #e2e3e5; color: #383d41; }
+        .copy-btn { position: absolute; top: 0.4rem; right: 0.4rem; font-size: 0.7rem; padding: 0.15rem 0.5rem; border: 1px solid var(--border); background: #fff; cursor: pointer; }
+        .filters { display: flex; gap: 0.5rem; margin: 1rem 0; flex-wrap: wrap; }
+        .filters button { padding: 0.25rem 0.75rem; border: 1px solid var(--border); border-radius: 999px; background: none; cursor: pointer; font: inherit; font-size: 0.85rem; }
+        .filters button.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+        @media (max-width: 600px) { body { padding: 1rem; } }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>RCA: checkout-api — 502s and DB connection pool exhaustion</h1>
+        <dl>
+            <dt>System</dt><dd>checkout-api (prod, us-east-1)</dd>
+            <dt>Key Identifiers</dt><dd><code>checkout-api-7d9f</code> pods · <code>orders-db</code> primary · ALB <code>chk-prod</code></dd>
+            <dt>First seen</dt><dd>2026-10-14 18:02 UTC</dd>
+        </dl>
+    </header>
+    <main>
+        <div class="filters" aria-label="Filter issues by status">
+            <button class="active" data-filter="all">All</button>
+            <button data-filter="resolved">Resolved</button>
+            <button data-filter="false-positive">False positive</button>
+        </div>
+
+        <article class="issue" data-status="false-positive">
+            <h2>Issue 1: 502s during peak, suspected ALB idle timeout <span class="badge badge-muted">False positive</span></h2>
+            <p class="symptom"><code>502 Bad Gateway</code> on <code>POST /v1/checkout</code>, ~4% of requests between 18:00–18:40 UTC.</p>
+            <details><summary>Investigation</summary><div>
+                <p>ALB access logs showed <code>elb_status_code=502</code> with <code>target_processing_time=-1</code>, which usually means the target closed the connection. The ALB idle timeout (60s) was lower than the app's keep-alive (75s), which looked like a classic mismatch.</p>
+            </div></details>
+            <div class="root-cause"><h3>Root Cause</h3><p>ALB idle timeout shorter than the upstream keep-alive, so the ALB reused sockets the app had already closed.</p></div>
+            <h3>Fix</h3>
+<pre><code>aws elbv2 modify-load-balancer-attributes \
+  --load-balancer-arn "$CHK_ALB_ARN" \
+  --attributes Key=idle_timeout.timeout_seconds,Value=90</code></pre>
+            <p><strong>Result:</strong> 502 rate unchanged the next evening.</p>
+            <div class="update">
+                <strong>Update (2026-10-16):</strong> This was a <strong>false positive</strong>.
+                <p><strong>Why it appeared to be the cause:</strong> The timeout mismatch was real but harmless. The 502s lined up with pods failing readiness, not with idle sockets.</p>
+                <p><strong>Actual cause:</strong> See Issue 2.</p>
+                <span class="badge badge-muted">False positive</span>
+            </div>
+        </article>
+
+        <article class="issue" data-status="resolved">
+            <h2>Issue 2: Connection pool exhausted by un-released transactions <span class="badge badge-success">Resolved</span></h2>
+            <p class="symptom"><code>HikariPool-1 - Connection is not available, request timed out after 30000ms</code>, then readiness probe failures and pods dropping out of the target group.</p>
+            <details><summary>Investigation</summary><div>
+                <ul>
+                    <li><code>pg_stat_activity</code> showed 40/40 connections <code>idle in transaction</code> during the spike.</li>
+                    <li>Dead end: raising <code>maximumPoolSize</code> to 80 only delayed exhaustion by ~6 minutes.</li>
+                    <li>Every stuck session's last query was <code>SELECT … FROM coupons FOR UPDATE</code>, added in the 2026-10-13 coupon-stacking release.</li>
+                </ul>
+            </div></details>
+            <div class="root-cause"><h3>Root Cause</h3><p>The coupon validator opened a transaction, then made an HTTP call to the pricing service <em>inside</em> it. When pricing slowed at peak, each request held a row lock and a pool connection for up to 30s.</p></div>
+            <h3>Fix</h3>
+<pre><code>git revert 3f1c9a2   # move pricing call outside the transaction
+kubectl -n checkout rollout restart deploy/checkout-api
+kubectl -n checkout rollout status deploy/checkout-api</code></pre>
+            <p><strong>Result:</strong> Zero <code>idle in transaction</code> sessions over 1s; 502 rate 0.00% through the 2026-10-17 peak.</p>
+        </article>
+
+        <section class="runbook">
+            <h2>Runbook</h2>
+            <ol>
+                <li>Check for sessions holding transactions open:
+<pre><code>psql "$ORDERS_DB_URL" -c "select pid, now()-xact_start as age, left(query,80)
+  from pg_stat_activity where state='idle in transaction' order by age desc limit 20;"</code></pre>
+                    Verify: any <code>age</code> over a few seconds is the smoking gun.</li>
+                <li>Confirm pods are leaving the target group, not just erroring:
+<pre><code>kubectl -n checkout get events --field-selector reason=Unhealthy --sort-by=.lastTimestamp | tail</code></pre></li>
+                <li>Before changing load-balancer settings, correlate 502 timestamps with readiness failures.</li>
+            </ol>
+        </section>
+
+        <section class="learnings">
+            <h2>Learnings</h2>
+            <ul>
+                <li><strong>Never make network calls inside a DB transaction.</strong> Latency elsewhere turns into lock and pool exhaustion here.</li>
+                <li><strong>A real misconfiguration isn't automatically the cause.</strong> Check that it lines up with the symptom's timing before you call it the fix.</li>
+                <li><strong>A bigger pool is a timer, not a fix.</strong> If raising the limit only delays failure, something is leaking.</li>
+            </ul>
+        </section>
+    </main>
+    <script>
+        document.querySelectorAll('pre').forEach(pre => {
+            const btn = document.createElement('button');
+            btn.className = 'copy-btn'; btn.textContent = 'Copy';
+            btn.onclick = () => { navigator.clipboard.writeText(pre.querySelector('code').textContent); btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy', 2000); };
+            pre.appendChild(btn);
+        });
+        document.querySelectorAll('.filters button').forEach(b => b.addEventListener('click', () => {
+            document.querySelectorAll('.filters button').forEach(x => x.classList.remove('active'));
+            b.classList.add('active');
+            document.querySelectorAll('.issue').forEach(i => {
+                i.style.display = (b.dataset.filter === 'all' || i.dataset.status === b.dataset.filter) ? '' : 'none';
+            });
+        }));
+    </script>
+</body>
+</html>
