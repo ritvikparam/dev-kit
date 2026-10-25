@@ -1,6 +1,13 @@
 ---
 name: raise-pr
-description: Raise a GitHub PR from current working changes — auto-creates a descriptive branch if on main/master, stages and commits with a meaningful message, then opens a PR with a comprehensive description. Also handles cherry-pick PRs: mirrors the original PR description and resolves conflicts. Use when user says "raise a PR", "create a PR", "open a PR", "make a PR", "push this as a PR", "ship this PR", "cherry-pick this", or wants to submit current changes to GitHub as a pull request.
+description: >
+  Raise a GitHub PR from current working changes — auto-creates a descriptive
+  branch if on main/master, stages and commits with a meaningful message, then
+  opens a PR with a comprehensive description. Also handles cherry-pick PRs:
+  mirrors the original PR description and resolves conflicts. Use when user says
+  "raise a PR", "create a PR", "open a PR", "make a PR", "push this as a PR",
+  "ship this PR", "cherry-pick this", or wants to submit current changes to
+  GitHub as a pull request.
 ---
 
 # Raise a GitHub PR
@@ -50,7 +57,7 @@ git commit -m "$(cat <<'EOF'
 
 <body — optional, only if why is non-obvious>
 
-Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+<co-author trailer — only if your agent/harness specifies one>
 EOF
 )"
 ```

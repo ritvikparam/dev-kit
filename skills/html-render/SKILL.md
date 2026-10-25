@@ -76,7 +76,7 @@ Determine what to convert:
 - **File path** — Read the file
 - **Multiple files** — Read all before proceeding
 - **Conversation context** — Use chat history
-- **URL/Google Doc** — Fetch content via MCP or WebFetch
+- **URL/Google Doc** — Fetch content via a Google Drive MCP/connector if available, otherwise your web-fetch tool
 - **Jira Issue** — Fetch via MCP tools
 - **Concept/idea** — Use the user's description directly
 - **Mermaid/diagram** — Parse the diagram syntax
@@ -196,7 +196,7 @@ After generating:
 4. Generate HTML with TOC, collapsible sections, and heading hierarchy preserved
 5. Save to `/tmp/<doc-title-slug>.html`
 
-**Note:** If Google Drive MCP is not available, fall back to `WebFetch` on the published/shared URL (only works for publicly shared docs).
+**Note:** If Google Drive MCP is not available, fall back to your web-fetch tool on the published/shared URL (only works for publicly shared docs).
 
 #### Handling Images
 
